@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: central-rakuten-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: central-rakuten-frontend
+  template:
+    metadata:
+      labels:
+        app: central-rakuten-frontend
+    spec:
+      containers:
+      - name: central-rakuten-frontend-container
+        image: registry.digitalocean.com/oondemand/central-rakuten-frontend:0.0.5
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.1"
+          limits:
+            memory: "2048Mi"
+            cpu: "3"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: central-rakuten-frontend-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: central-rakuten-frontend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 3000
